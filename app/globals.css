@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --text: #160202;
+  --background: #f4eeee;
+  --primary: #f8fafc;
+  --secondary: #ffffff;
+  --accent: #171717;
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+}
+
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background-color: var(--background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), var(--font-sans), sans-serif;
+}
