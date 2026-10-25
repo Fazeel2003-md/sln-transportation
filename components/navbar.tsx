@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { label: "Services", href: "#services" },
   { label: "Why Choose Us", href: "#why-us" },
   { label: "Careers", href: "#careers" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
@@ -29,11 +30,57 @@ export default function Navbar() {
     const handleScroll = () => {
       // Trigger detachment when scrolled past 30px
       setScrolled(window.scrollY > 30);
+
+      // Scroll-spy: highlight the nav item of the current section
+      const sectionIds = navItems
+        .map((item) => item.href.replace("#", ""))
+        .filter(Boolean);
+      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+
+      for (const sectionId of sectionIds) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            const matched = navItems.find(
+              (item) => item.href === `#${sectionId}`
+            );
+            if (matched) setActiveItem(matched.label);
+          }
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fallback spy: re-checks the active section periodically, guaranteeing the
+  // highlight stays correct even if scroll events are ever missed
+  useEffect(() => {
+    const id = setInterval(() => {
+      const sectionIds = navItems
+        .map((item) => item.href.replace("#", ""))
+        .filter(Boolean);
+      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+
+      for (const sectionId of sectionIds) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            const matched = navItems.find(
+              (item) => item.href === `#${sectionId}`
+            );
+            if (matched) setActiveItem(matched.label);
+          }
+        }
+      }
+    }, 350);
+    return () => clearInterval(id);
   }, []);
 
   return (

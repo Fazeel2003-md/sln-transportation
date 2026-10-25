@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Home, Users, Bus, Award, Briefcase } from "lucide-react";
+import { Home, Users, Bus, Award, Briefcase, Phone } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { label: "Services", href: "#services", icon: <Bus className="w-4 h-4" /> },
   { label: "Why Choose Us", href: "#why-us", icon: <Award className="w-4 h-4" /> },
   { label: "Careers", href: "#careers", icon: <Briefcase className="w-4 h-4" /> },
+  { label: "Contact", href: "#contact", icon: <Phone className="w-4 h-4" /> },
 ];
 
 export default function SideDock() {
@@ -29,7 +30,7 @@ export default function SideDock() {
       setIsVisible(window.scrollY > heroThreshold);
 
       // Simple Scroll-Spy detection for sections
-      const sections = ["home", "about", "services", "why-us", "careers"];
+      const sections = ["home", "about", "services", "why-us", "careers", "contact"];
       const scrollPosition = window.scrollY + window.innerHeight * 0.35;
 
       for (const sectionId of sections) {

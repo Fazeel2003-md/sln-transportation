@@ -27,3 +27,303 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), var(--font-sans), sans-serif;
 }
+
+/* Vertical marquee columns (hero collage) */
+@keyframes marquee-down {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes marquee-up {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.marquee-track {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.marquee-down {
+  animation-name: marquee-down;
+  animation-duration: 48s;
+}
+
+.marquee-up {
+  animation-name: marquee-up;
+  animation-duration: 42s;
+}
+
+.marquee-pause:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Fade-up entrance (services section) */
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fade-up 0.5s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none !important;
+  }
+}
+
+/* Animated "Why Choose Us" feature-card row */
+.wc-row {
+  --wc-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wc-card {
+  transition:
+    flex-grow 0.8s var(--wc-ease),
+    height 0.7s var(--wc-ease),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  height: 8.75rem;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+}
+
+.wc-card.is-active {
+  height: 21rem;
+  flex-grow: 2.6;
+}
+
+@media (max-width: 767px) {
+  /* Mobile: active card expanded, inactive cards compact rows */
+  .wc-card {
+    height: 4.5rem;
+    justify-content: center;
+  }
+
+  /* Hide the big pale number on compact mobile rows (label suffices) */
+  .wc-card .wc-bignum {
+    display: none;
+  }
+
+  .wc-card.is-active {
+    height: 21rem;
+    justify-content: flex-end;
+  }
+
+  .wc-card.is-active .wc-bignum {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .wc-card .wc-content {
+    padding-left: 4.25rem;
+  }
+
+  .wc-card.is-active .wc-content {
+    padding-left: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .wc-row {
+    height: 27rem;
+  }
+
+  .wc-card,
+  .wc-card.is-active {
+    height: 100%;
+  }
+}
+
+/* Careers section — cards slide out from the middle outward each time in view */
+.careers-row .career-card-left,
+.careers-row .career-card-right {
+  opacity: 0;
+}
+
+.careers-row .career-card-left {
+  transform: translateX(50%);
+}
+
+.careers-row .career-card-right {
+  transform: translateX(-50%);
+}
+
+.careers-row.is-in .career-card-left {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.careers-row.is-in .career-card-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.careers-row.is-in .career-card-left,
+.careers-row.is-in .career-card-right {
+  transition:
+    transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Contact section entrance + micro-interactions */
+.ct-reveal > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ct-reveal.is-in > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ct-reveal.is-in > *:nth-child(1) { transition-delay: 0s; }
+.ct-reveal.is-in > *:nth-child(2) { transition-delay: 0.08s; }
+.ct-reveal.is-in > *:nth-child(3) { transition-delay: 0.16s; }
+.ct-reveal.is-in > *:nth-child(4) { transition-delay: 0.24s; }
+
+.ct-form {
+  opacity: 0;
+  transform: translateY(26px) scale(0.98);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ct-form.is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-reveal > *,
+  .ct-form {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .careers-row .career-card-left,
+  .careers-row .career-card-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* About section feature-panel icon micro-interactions (plain CSS for reliability) */
+@keyframes pin-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes heart-beat {
+  0%, 100% { transform: scale(1); }
+  12% { transform: scale(1.1); }
+  24% { transform: scale(1); }
+  36% { transform: scale(1.08); }
+  48% { transform: scale(1); }
+}
+
+.about-panel .about-shield,
+.about-panel .about-users,
+.about-panel .about-pin,
+.about-panel .about-heart {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+}
+
+/* Icons: dark navy by default, orange on hover */
+.about-panel .about-users svg,
+.about-panel .about-pin svg,
+.about-panel .about-heart svg {
+  transition: stroke 0.35s ease, fill 0.35s ease, color 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Circle bg: white by default, orange with glow while hovered */
+.about-panel .about-shield,
+.about-panel .about-users,
+.about-panel .about-pin,
+.about-panel .about-heart {
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Shield: scale up with soft orange glow on hover */
+.about-panel .group:hover .about-shield {
+  transform: scale(1.1);
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.55);
+}
+
+/* Users: gentle lift + color shift to orange */
+.about-panel .group:hover .about-users {
+  transform: translateY(-3px) scale(1.08);
+  background-color: #f97316;
+  box-shadow: 0 0 22px rgba(249, 115, 22, 0.45);
+}
+
+.about-panel .group:hover .about-users svg {
+  color: #ffffff;
+}
+
+/* Pin: smooth gentle float while idle; stronger when hovered */
+.about-panel .about-pin {
+  animation: pin-float 2.4s ease-in-out infinite;
+}
+
+.about-panel .group:hover .about-pin {
+  animation: pin-float 1.4s ease-in-out infinite;
+  background-color: #f97316;
+  box-shadow: 0 0 22px rgba(249, 115, 22, 0.45);
+}
+
+.about-panel .group:hover .about-pin svg {
+  color: #ffffff;
+}
+
+/* Heart: gentle heartbeat while idle; stronger when hovered */
+.about-panel .about-heart {
+  animation: heart-beat 1.6s ease-in-out infinite;
+}
+
+.about-panel .group:hover .about-heart {
+  animation: heart-beat 0.9s ease-in-out infinite;
+  background-color: #f97316;
+  box-shadow: 0 0 22px rgba(249, 115, 22, 0.45);
+}
+
+.about-panel .group:hover .about-heart svg {
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-panel .about-shield,
+  .about-panel .about-users,
+  .about-panel .about-pin,
+  .about-panel .about-heart {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wc-card {
+    transition: none !important;
+  }
+}

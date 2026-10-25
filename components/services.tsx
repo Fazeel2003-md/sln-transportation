@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,147 +16,226 @@ import {
 
 interface ServiceItem {
   id: string;
+  num: string;
   title: string;
-  badge: string;
   description: string;
   image: string;
-  icon: React.ReactNode;
-  highlights: string[];
 }
 
+/* Every visual is a normal four-door sedan with a small SLN door decal */
 const servicesList: ServiceItem[] = [
   {
-    id: "special-needs",
-    title: "Special Needs & Individualized IEP Transit",
-    badge: "Specialized Care",
+    id: "daily-routes",
+    num: "01",
+    title: "Daily School Routes",
     description:
-      "Comfortable, stress-free transportation for students with autism, physical mobility needs, sensory sensitivities, and medical accommodations.",
-    image: "/images/special-needs.webp",
-    icon: <Accessibility className="w-5 h-5 text-[#f97316]" />,
-    highlights: [
-      "Wheelchair accessibility & secure 3-point harness systems",
-      "Trained dedicated monitors assisting with sensory comfort",
-      "Consistent drivers to build student familiarity and trust",
-    ],
+      "Everyday sedans running safe, punctual door-to-door routes between home and school, driven by background-checked, fingerprinted crews.",
+    image: "/images/svc-daily-routes.jpg",
+  },
+  {
+    id: "special-needs",
+    num: "02",
+    title: "Special Needs Transport",
+    description:
+      "Patient, caring rides tailored for students with individualized needs — calm home or school pickups, consistent crews, and unhurried attention.",
+    image: "/images/svc-special-needs.jpg",
   },
   {
     id: "mckinney-vento",
+    num: "03",
     title: "McKinney-Vento Homeless Assistance",
-    badge: "Zero Missed Days",
     description:
-      "Reliable, discrete, door-to-door transportation ensuring displaced and foster youth maintain uninterrupted educational stability in their home school.",
-    image: "/images/mckinney-vento.webp",
-    icon: <Home className="w-5 h-5 text-[#f97316]" />,
-    highlights: [
-      "Rapid route assignment within 24-48 hours",
-      "Discreet, non-stigmatizing modern passenger vans",
-      "Flexible pickup adjustments as living arrangements change",
-    ],
+      "Discreet door-to-door rides that keep displaced and foster students connected to their home school, with flexible pickups that adapt as circumstances change.",
+    image: "/images/svc-mckinney-vento.jpg",
   },
   {
     id: "hard-to-serve",
+    num: "04",
     title: "Hard-to-Serve & Out-of-District Routes",
-    badge: "High Efficiency",
     description:
-      "Agile transit solutions for specialized magnet academies, vocational schools, and remote routes where 72-passenger buses are impractical and costly.",
-    image: "/images/hard-to-serve.webp",
-    icon: <Compass className="w-5 h-5 text-[#f97316]" />,
-    highlights: [
-      "Significant fuel & operational cost savings for districts",
-      "Shorter transit times and direct, non-stop routes",
-      "Cross-county and out-of-boundary service capabilities",
-    ],
+      "Direct, non-stop service to magnet academies, vocational campuses, and remote attendance centers — saving districts the cost of oversized buses.",
+    image: "/images/svc-hard-to-serve.jpg",
+  },
+  {
+    id: "driver-monitor",
+    num: "05",
+    title: "Driver & Monitor Teams",
+    description:
+      "A dedicated two-person crew in every sedan — an attentive driver and monitor pair who know your student by name and communicate every step of the ride.",
+    image: "/images/svc-driver-monitor.jpg",
   },
 ];
 
 export default function Services() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [reduced, setReduced] = useState(false);
+
+  const current = servicesList[Math.min(active, servicesList.length - 1)];
+
+  useEffect(() => {
+    // Only auto-cycle while the section is on screen
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.35 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // Respect reduced-motion preference
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    // Automatic seamless rotation (~3.6s), paused on hover/interaction
+    if (paused || reduced || !inView) return;
+    const id = setInterval(
+      () => setActive((a) => (a + 1) % servicesList.length),
+      3600
+    );
+    return () => clearInterval(id);
+  }, [paused, reduced, inView]);
+
   return (
     <section
+      ref={sectionRef}
       id="services"
-      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden"
+      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f4eeee] border border-[#160202]/10 text-[#160202] text-xs font-semibold uppercase tracking-wider mb-4 shadow-xs">
-            <Sparkles className="w-4 h-4 text-[#f97316]" />
-            <span>Tailored Transit Programs</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#160202] tracking-tight leading-[1.2] mb-5 font-heading">
-            Specialized School Transit Services Tailored for Every District Need
+        <div className="max-w-3xl mb-14 sm:mb-16">
+          <span className="inline-block text-xs font-bold uppercase tracking-[0.18em] text-[#f97316] mb-4">
+            What We Offer
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#160202] tracking-tight leading-[1.15] mb-5 font-heading">
+            Comprehensive Transportation Services
           </h2>
           <p className="text-base sm:text-lg text-[#160202]/75 leading-relaxed">
-            We partner with Illinois public school districts, charter networks, and private academies to provide safe, reliable, and compliant specialized transportation.
+            We tailor our student transportation solutions to meet the specific
+            requirements of schools, parents, and community organizations in
+            Chicago and surrounding areas.
           </p>
         </div>
 
-        {/* 3-Column Services Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {servicesList.map((service) => (
-            <div
-              key={service.id}
-              className="group flex flex-col rounded-3xl bg-[#f8fafc] border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-[0_20px_40px_rgba(22,2,2,0.08)] transition-all duration-300 hover:-translate-y-1.5"
-            >
-              {/* Image Container with Soft Zoom on Hover */}
-              <div className="relative w-full h-56 sm:h-60 overflow-hidden bg-slate-100">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  fill
-                  className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-
-                {/* Floating Tag */}
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#160202] text-xs font-bold shadow-sm">
-                  {service.icon}
-                  <span>{service.badge}</span>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xl font-bold text-[#160202] font-heading mb-3 group-hover:text-[#f97316] transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-[#160202]/75 leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-
-                  {/* Highlights Bullet List */}
-                  <ul className="space-y-2.5 mb-6">
-                    {service.highlights.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-2.5 text-xs sm:text-[13px] text-[#160202]/85 font-medium leading-normal"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Footer Link */}
-                <div className="pt-4 border-t border-slate-200">
-                  <Link
-                    href="#contact"
-                    className="inline-flex items-center gap-2 text-sm font-bold text-[#f97316] group-hover:text-orange-600 transition-colors"
+        {/* Animated two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          {/* Left: animated services list */}
+          <ul className="relative order-1 space-y-1">
+            {servicesList.map((service, i) => {
+              const isActive = i === active;
+              return (
+                <li
+                  key={service.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-current={isActive ? "true" : undefined}
+                  aria-label={`Show ${service.title}`}
+                  onMouseEnter={() => {
+                    setActive(i);
+                    setPaused(true);
+                  }}
+                  onMouseLeave={() => setPaused(false)}
+                  onFocus={() => {
+                    setActive(i);
+                    setPaused(true);
+                  }}
+                  onBlur={() => setPaused(false)}
+                  onClick={() => setActive(i)}
+                  onTouchStart={() => setActive(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActive(i);
+                    }
+                  }}
+                  className={`group flex items-baseline gap-4 sm:gap-5 py-3 sm:py-3.5 cursor-pointer transition-all duration-500 ease-out outline-none ${
+                    isActive
+                      ? "translate-x-2"
+                      : "translate-x-0 hover:translate-x-1"
+                  }`}
+                >
+                  <span
+                    className={`text-xs sm:text-sm font-bold tracking-wider transition-all duration-500 ${
+                      isActive
+                        ? "text-[#f97316] opacity-100"
+                        : "text-[#160202]/40"
+                    }`}
                   >
-                    <span>Request Route Estimate</span>
-                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </Link>
+                    {service.num}
+                  </span>
+                  <span className="flex flex-col">
+                    <span
+                      className={`text-lg sm:text-xl lg:text-2xl font-bold font-heading leading-snug transition-all duration-500 ${
+                        isActive
+                          ? "text-[#160202]"
+                          : "text-[#160202]/35 group-hover:text-[#160202]/60"
+                      }`}
+                    >
+                      {service.title}
+                    </span>
+                    <span
+                      className={`block h-0.5 bg-[#f97316] mt-1.5 transition-all duration-500 ${
+                        isActive ? "w-10 opacity-100" : "w-0 opacity-0"
+                      }`}
+                    />
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Right: animated visual panel */}
+          <div className="relative order-2">
+            <div className="relative aspect-[4/3] sm:aspect-[16/10] rounded-3xl overflow-hidden bg-[#f4eeee] shadow-[0_18px_44px_rgba(22,2,2,0.10)]">
+              {servicesList.map((service, i) => (
+                <div
+                  key={service.id}
+                  className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                    i === active ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    priority={i === 0}
+                    sizes="(min-width: 1024px) 44vw, 100vw"
+                    className="object-cover object-center"
+                  />
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+
+            {/* Description synced with the active service */}
+            <div className="flex items-start gap-3.5 mt-5 px-1 min-h-[76px]">
+              <div className="w-9 h-9 rounded-full bg-[#f97316]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-[11px] font-bold text-[#f97316]">
+                  {current.num}
+                </span>
+              </div>
+              <p
+                key={current.id}
+                className="fade-up text-sm sm:text-[15px] text-[#160202]/80 leading-relaxed max-w-xl"
+              >
+                {current.description}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Callout Banner */}
-        <div className="rounded-3xl bg-[#171717] p-8 sm:p-10 text-white relative overflow-hidden shadow-xl">
-          {/* Subtle glow background */}
+        <div className="mt-16 rounded-3xl bg-[#171717] p-8 sm:p-10 text-white relative overflow-hidden shadow-xl">
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#f97316]/20 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
@@ -169,7 +248,8 @@ export default function Services() {
                 Need a Custom Route Quote for Your School District?
               </h3>
               <p className="text-sm sm:text-base text-white/80 leading-relaxed">
-                Contact our dispatch team today for prompt route assessments, transparent per-route pricing, and immediate student assignment.
+                Contact our dispatch team today for prompt route assessments,
+                transparent per-route pricing, and immediate student assignment.
               </p>
             </div>
 
