@@ -3,22 +3,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Bus, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  MapPin,
+  Bus,
+  ShieldCheck,
+  Route,
+  Snowflake,
+} from "lucide-react";
 
 type HeroImage = { src: string; alt: string; h: string };
 
 /* Column contents (both columns scroll through the full set in opposite directions) */
 const columnOne: HeroImage[] = [
-  {
-    src: "/images/hero-photo.jpg",
-    alt: "SLN driver opening the door for a student",
-    h: "h-64",
-  },
-  {
-    src: "/images/camry-brookridge.jpg",
-    alt: "SLN sedan at an elementary school pickup lane",
-    h: "h-60",
-  },
   {
     src: "/images/monitor.webp",
     alt: "SLN monitor walking students to the vehicle",
@@ -30,6 +27,21 @@ const columnOne: HeroImage[] = [
     h: "h-40",
   },
   {
+    src: "/images/hero-g-backpack.png",
+    alt: "Student with backpack stepping into an SLN sedan at school",
+    h: "h-52",
+  },
+  {
+    src: "/images/driver.webp",
+    alt: "SLN driver at the wheel in a residential neighborhood",
+    h: "h-60",
+  },
+  {
+    src: "/images/hero-monitor-van.jpg",
+    alt: "SLN monitor helping students board the vehicle",
+    h: "h-64",
+  },
+  {
     src: "/images/mckinney-vento.webp",
     alt: "Students waving in front of an SLN bus",
     h: "h-52",
@@ -38,24 +50,14 @@ const columnOne: HeroImage[] = [
 
 const columnTwo: HeroImage[] = [
   {
-    src: "/images/corolla-school.jpg",
-    alt: "SLN sedan drop-off at an elementary school",
-    h: "h-64",
-  },
-  {
-    src: "/images/camry-home.jpg",
-    alt: "SLN sedan arriving for a home pickup",
-    h: "h-56",
-  },
-  {
     src: "/images/special-needs.webp",
     alt: "SLN attendant securing a student with special needs",
     h: "h-60",
   },
   {
-    src: "/images/corolla-home.jpg",
-    alt: "SLN driver greeting a mother and her students",
-    h: "h-52",
+    src: "/images/hero-sienna-dropoff.png",
+    alt: "SLN Sienna van helping a student at a school entrance",
+    h: "h-56",
   },
   {
     src: "/images/hard-to-serve.webp",
@@ -125,6 +127,7 @@ export default function Hero() {
       id="home"
       className="relative w-full overflow-hidden bg-[#faf3ec] pt-32 sm:pt-36 lg:pt-36 pb-16 lg:pb-20"
     >
+      <div aria-hidden className="hero-grid-pattern pointer-events-none absolute inset-0" />
       {/* Decorative dashed circles on the left */}
       <div
         aria-hidden
@@ -137,23 +140,23 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
         {/* ---- Left: Text Content ---- */}
-        <div className="max-w-xl">
+        <div className="hero-copy max-w-xl -translate-y-3 sm:-translate-y-5 lg:-translate-y-8">
           {/* Step 1: Badge Tag (Delays 150ms) */}
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm text-[13px] font-bold text-[#160202] mb-5 transition-all duration-700 ease-out ${
+            className={`hero-location-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm text-[13px] font-bold text-[#160202] mb-5 transition-all duration-700 ease-out ${
               inView
                 ? "opacity-100 translate-y-0 scale-100"
                 : "opacity-0 -translate-y-3 scale-95"
             }`}
             style={{ transitionDelay: "150ms" }}
           >
-            <MapPin className="w-4 h-4 text-[#160202]" />
+            <MapPin className="hero-location-pin w-4 h-4 text-[#160202]" />
             <span>Student Transportation • Chicago, IL</span>
           </div>
 
           {/* Step 2: Hero Title (Delays 300ms) */}
           <h1
-            className={`text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-[#160202] leading-[1.08] mb-5 transition-all duration-800 ease-out ${
+            className={`text-4xl sm:text-5xl lg:text-[52px] font-[family-name:var(--font-serif-head)] font-semibold tracking-tight text-[#160202] leading-[1.16] mb-5 transition-all duration-800 ease-out ${
               inView
                 ? "opacity-100 translate-y-0 blur-0"
                 : "opacity-0 translate-y-6 blur-sm"
@@ -188,20 +191,47 @@ export default function Hero() {
           >
             <Link
               href="#apply"
-              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#f6c244] hover:bg-[#eec02f] text-[#160202] font-bold text-[14px] shadow-sm active:translate-y-0 transition-all duration-200 hover:scale-[1.02]"
+              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#f97316] hover:bg-[#ea6a0c] text-white font-bold text-[14px] shadow-[0_8px_20px_rgba(249,115,22,0.3)] active:translate-y-0 transition-all duration-200 hover:scale-[1.02]"
             >
               <span>Apply Now</span>
-              <ArrowRight className="w-4 h-4 text-[#160202] transition-transform duration-200 ease-out group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 text-white transition-transform duration-200 ease-out group-hover:translate-x-1" />
             </Link>
 
             <Link
               href="#contact"
-              className="group inline-flex items-center justify-center gap-2 text-[#160202] font-bold text-[14.5px] underline decoration-2 underline-offset-[6px] hover:decoration-[#f6c244] transition-colors duration-200"
+              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#16a34a] hover:bg-[#15803d] text-white font-bold text-[14px] shadow-[0_8px_20px_rgba(22,163,74,0.25)] transition-all duration-200 hover:scale-[1.02]"
             >
               <span>Contact Us</span>
-              <ArrowRight className="w-4 h-4 text-[#160202] transition-transform duration-200 ease-out group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 text-white transition-transform duration-200 ease-out group-hover:translate-x-1" />
             </Link>
           </div>
+
+          {/* Supporting service assurances */}
+          <ul
+            className={`hero-assurances mt-7 sm:mt-8 pt-5 border-t border-[#160202]/10 flex flex-wrap items-center gap-x-5 gap-y-3 transition-all duration-700 ease-out ${
+              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+            style={{ transitionDelay: "900ms" }}
+          >
+            <li className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-semibold text-[#160202]/80">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#f97316]/10 text-[#f97316] shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </span>
+              Background-Checked Staff
+            </li>
+            <li className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-semibold text-[#160202]/80">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#f97316]/10 text-[#f97316] shrink-0">
+                <Route className="w-4 h-4" />
+              </span>
+              Door-to-Door Routes
+            </li>
+            <li className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-semibold text-[#160202]/80">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#f97316]/10 text-[#f97316] shrink-0">
+                <Snowflake className="w-4 h-4" />
+              </span>
+              Climate-Controlled Vehicles
+            </li>
+          </ul>
         </div>
 
         {/* ---- Right: Scrolling Photo Columns ---- */}
@@ -227,17 +257,21 @@ export default function Hero() {
 
           {/* Floating badges */}
           <div className="absolute bottom-6 -right-3 z-20 flex flex-col items-stretch gap-2.5">
-            <div className="flex items-center justify-between gap-3 bg-white rounded-xl pl-4 pr-3.5 py-2.5 shadow-md">
+            <div className="hero-trust-card hero-trust-card-first flex items-center justify-between gap-3 bg-white rounded-xl pl-4 pr-3.5 py-2.5 shadow-md">
               <span className="text-[13px] font-bold text-[#160202]">
                 Safe Journeys
               </span>
-              <Bus className="w-4.5 h-4.5 text-[#160202]" />
+              <span className="hero-trust-icon">
+                <Bus className="w-4.5 h-4.5" />
+              </span>
             </div>
-            <div className="flex items-center justify-between gap-3 bg-white rounded-xl pl-4 pr-3.5 py-2.5 shadow-md">
+            <div className="hero-trust-card hero-trust-card-second flex items-center justify-between gap-3 bg-white rounded-xl pl-4 pr-3.5 py-2.5 shadow-md">
               <span className="text-[13px] font-bold text-[#160202]">
                 Trusted Drivers
               </span>
-              <ShieldCheck className="w-4.5 h-4.5 text-[#160202]" />
+              <span className="hero-trust-icon">
+                <ShieldCheck className="w-4.5 h-4.5" />
+              </span>
             </div>
           </div>
         </div>
@@ -249,8 +283,8 @@ export default function Hero() {
           }`}
         >
           <Image
-            src="/images/hero-photo.jpg"
-            alt="SLN driver helping a student board the vehicle"
+            src="/images/hero-sienna-dropoff.png"
+            alt="SLN driver helping a student at school"
             fill
             priority
             sizes="100vw"

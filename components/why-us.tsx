@@ -110,7 +110,7 @@ export default function WhyUs() {
     <section
       ref={sectionRef}
       id="why-us"
-      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
+      className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}

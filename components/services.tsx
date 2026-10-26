@@ -8,9 +8,7 @@ import {
   Accessibility,
   Home,
   Compass,
-  ArrowRight,
   ShieldCheck,
-  Users2,
   Clock,
 } from "lucide-react";
 
@@ -39,30 +37,6 @@ const servicesList: ServiceItem[] = [
     description:
       "Patient, caring rides tailored for students with individualized needs — calm home or school pickups, consistent crews, and unhurried attention.",
     image: "/images/svc-special-needs.jpg",
-  },
-  {
-    id: "mckinney-vento",
-    num: "03",
-    title: "McKinney-Vento Homeless Assistance",
-    description:
-      "Discreet door-to-door rides that keep displaced and foster students connected to their home school, with flexible pickups that adapt as circumstances change.",
-    image: "/images/svc-mckinney-vento.jpg",
-  },
-  {
-    id: "hard-to-serve",
-    num: "04",
-    title: "Hard-to-Serve & Out-of-District Routes",
-    description:
-      "Direct, non-stop service to magnet academies, vocational campuses, and remote attendance centers — saving districts the cost of oversized buses.",
-    image: "/images/svc-hard-to-serve.jpg",
-  },
-  {
-    id: "driver-monitor",
-    num: "05",
-    title: "Driver & Monitor Teams",
-    description:
-      "A dedicated two-person crew in every sedan — an attentive driver and monitor pair who know your student by name and communicate every step of the ride.",
-    image: "/images/svc-driver-monitor.jpg",
   },
 ];
 
@@ -110,11 +84,11 @@ export default function Services() {
     <section
       ref={sectionRef}
       id="services"
-      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
+      className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 sm:mb-16">
+        <div className="max-w-4xl mx-auto mb-14 sm:mb-16 text-center">
           <span className="inline-block text-xs font-bold uppercase tracking-[0.18em] text-[#f97316] mb-4">
             What We Offer
           </span>
@@ -234,41 +208,6 @@ export default function Services() {
           </div>
         </div>
 
-        {/* Bottom Callout Banner */}
-        <div className="mt-16 rounded-3xl bg-[#171717] p-8 sm:p-10 text-white relative overflow-hidden shadow-xl">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-[#f97316]/20 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="max-w-2xl text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#f97316] mb-2">
-                <Users2 className="w-4 h-4" />
-                School District Coordinators
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-bold font-heading mb-2">
-                Need a Custom Route Quote for Your School District?
-              </h3>
-              <p className="text-sm sm:text-base text-white/80 leading-relaxed">
-                Contact our dispatch team today for prompt route assessments,
-                transparent per-route pricing, and immediate student assignment.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 shrink-0">
-              <Link
-                href="#contact"
-                className="px-6 py-3.5 rounded-xl bg-[#f97316] text-white font-bold text-sm shadow-md transition-all hover:bg-orange-600 hover:scale-[1.02]"
-              >
-                Request District Quote
-              </Link>
-              <Link
-                href="tel:3125550199"
-                className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-white font-semibold text-sm transition-all"
-              >
-                Call Dispatch Team
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

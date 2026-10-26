@@ -74,7 +74,7 @@ export default function Contact() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative w-full py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
+      className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       {/* Decorative accents */}
       <div aria-hidden className="pointer-events-none absolute inset-0">

@@ -67,7 +67,7 @@ export default function About() {
         </div>
 
         {/* Bottom Feature Bar */}
-        <div className="about-panel mt-16 sm:mt-20 p-6 sm:p-8 rounded-3xl bg-white/15 backdrop-blur-[14px] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.14)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-0">
+        <div className="about-panel mt-32 sm:mt-36 p-6 sm:p-8 rounded-3xl bg-white/15 backdrop-blur-[14px] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.14)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-0">
           {/* Safety First */}
           <div className="group flex items-start gap-4 lg:pr-6 lg:border-r border-white/15">
             <div className="about-shield w-14 h-14 rounded-full bg-[#f97316] flex items-center justify-center shrink-0">

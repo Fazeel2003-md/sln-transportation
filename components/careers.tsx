@@ -44,7 +44,7 @@ export default function Careers() {
       id="careers"
       className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-14 sm:mb-16">
           <h2 className="text-4xl sm:text-5xl font-extrabold font-heading tracking-tight leading-[1.15] text-[#160202]">
@@ -58,7 +58,7 @@ export default function Careers() {
         {/* Cards — slide out from the middle to their sides on reveal */}
         <div
           ref={rowRef}
-          className={`careers-row grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl ${
+          className={`careers-row grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto ${
             inView ? "is-in" : ""
           }`}
         >
