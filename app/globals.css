@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+body:has(.driver-application-page) {
+  background-color: #f4f7fb;
+}
+
+body:has(.driver-application-page) > header,
+body:has(.driver-application-page) > aside,
+body:has(.driver-application-page) > footer {
+  display: none;
+}
+
+body:has(.driver-application-page) > main {
+  flex: none;
+}
+
 :root {
   --text: #160202;
   --background: #f4eeee;

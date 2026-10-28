@@ -10,6 +10,7 @@ const roles = [
       "Fulfil the mission. Safely transport children from home to school and school to home…",
     image: "/images/careers-driver.jpg",
     alt: "Smiling SLN driver with crossed arms beside a silver SLN sedan in a residential neighborhood",
+    applyHref: "/apply?position=driver",
     accentClass: "career-card-left",
     topBorder: "border-t-4 border-[#1a3a7a]",
   },
@@ -19,6 +20,7 @@ const roles = [
       "Supervise and help the children during the home/school – school/home routes…",
     image: "/images/careers-monitor.jpg",
     alt: "SLN monitor helping young students out of the vehicle at home",
+    applyHref: "/apply?position=monitor",
     accentClass: "career-card-right",
     topBorder: "border-t-4 border-[#f97316]",
   },
@@ -89,7 +91,7 @@ export default function Careers() {
                 </p>
 
                 <a
-                  href="tel:3125550199"
+                  href={role.applyHref}
                   className="mt-auto mx-auto inline-flex items-center justify-center w-full max-w-[240px] px-6 py-3 rounded-lg border border-[#160202]/25 text-[#160202] font-semibold text-sm transition-all duration-200 hover:bg-[#f97316] hover:border-[#f97316] hover:text-white"
                 >
                   Apply

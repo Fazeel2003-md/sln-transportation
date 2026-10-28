@@ -35,8 +35,8 @@ const servicesList: ServiceItem[] = [
     num: "02",
     title: "Special Needs Transport",
     description:
-      "Patient, caring rides tailored for students with individualized needs — calm home or school pickups, consistent crews, and unhurried attention.",
-    image: "/images/svc-special-needs.jpg",
+      "Reliable, door-to-door transportation with patient, hands-on assistance tailored to each passenger’s mobility and accessibility needs.",
+    image: "/images/special-transportations.webp",
   },
 ];
 

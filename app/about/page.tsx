@@ -44,9 +44,6 @@ const differentiators = [
 const services = [
   "Daily School Routes",
   "Special Needs Transport",
-  "McKinney-Vento Homeless Assistance",
-  "Hard-to-Serve & Out-of-District Routes",
-  "Driver & Monitor Teams",
 ];
 
 const whyPoints = [
@@ -94,6 +91,16 @@ export default function AboutPage() {
       {/* Section 1 — Why Choose SLN Transportation */}
       <section className="w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          <div className="mb-6 flex justify-end">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#f97316] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+          </div>
+
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <span className="inline-block text-xs font-bold uppercase tracking-[0.18em] text-[#f97316] mb-4">
               About SLN Transportation
@@ -127,15 +134,6 @@ export default function AboutPage() {
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#160202]/70 hover:text-[#f97316] transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -209,19 +207,13 @@ export default function AboutPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {services.map((service, i) => (
+            {services.map((service) => (
               <div
                 key={service}
-                className={`flex items-center gap-4 p-5 rounded-2xl bg-[#f6f5f4] border border-slate-200/80 ${
-                  i === services.length - 1 ? "sm:col-span-2" : ""
-                }`}
+                className="flex items-center gap-4 p-5 rounded-2xl bg-[#f6f5f4] border border-slate-200/80"
               >
                 <div className="w-11 h-11 rounded-2xl bg-white shadow-xs border border-slate-200/80 flex items-center justify-center shrink-0">
-                  {i === 4 ? (
-                    <UserCog className="w-5 h-5 text-[#f97316]" />
-                  ) : (
-                    <Route className="w-5 h-5 text-[#f97316]" />
-                  )}
+                  <Route className="w-5 h-5 text-[#f97316]" />
                 </div>
 
                 <h3 className="text-base font-bold font-heading text-[#160202]">
