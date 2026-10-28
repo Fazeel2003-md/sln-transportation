@@ -2,19 +2,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, run the development server with Webpack (used for this Windows setup):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev -- --webpack --port 3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) in your browser to preview the site locally. This address only works on the computer running the development server; it is not a public website link.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
