@@ -11,7 +11,6 @@ import {
   Send,
   ChevronRight,
   ArrowRight,
-  CheckCircle2,
 } from "lucide-react";
 
 const contactCards = [
@@ -53,7 +52,6 @@ const subjects = [
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
-  const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", email: "", subject: "General Inquiry", message: "" });
 
   useEffect(() => {
@@ -118,7 +116,7 @@ export default function Contact() {
             {contactCards.map((card, i) => (
               <div
                 key={card.label}
-                className="group flex items-center gap-4 sm:gap-5 p-5 rounded-2xl bg-white shadow-[0_6px_24px_rgba(22,2,2,0.06)] hover:shadow-[0_14px_36px_rgba(22,2,2,0.1)] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                className="group flex items-center gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-white shadow-[0_6px_24px_rgba(22,2,2,0.06)] hover:shadow-[0_14px_36px_rgba(22,2,2,0.1)] hover:-translate-y-1 transition-all duration-300"
               >
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 ${card.chip}`}
@@ -130,7 +128,7 @@ export default function Contact() {
                   <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#160202]/45 mb-1">
                     {card.label}
                   </p>
-                  <p className="text-sm sm:text-[15px] font-semibold text-[#160202] whitespace-pre-line truncate">
+                  <p className="text-sm sm:text-[15px] font-semibold text-[#160202] whitespace-pre-line break-words">
                     {card.value}
                   </p>
                   <a
@@ -168,24 +166,15 @@ export default function Contact() {
               as possible.
             </p>
 
-            {sent ? (
-              <div className="flex flex-col items-center text-center py-10 gap-3">
-                <CheckCircle2 className="w-12 h-12 text-green-500" />
-                <p className="text-lg font-bold font-heading text-[#160202]">
-                  Message Sent!
-                </p>
-                <p className="text-sm text-[#160202]/60">
-                  Our dispatch team will be in touch shortly.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-                className="flex flex-col gap-5"
-              >
+            <form
+              action="https://formsubmit.co/slntransportationllc999@gmail.com"
+              method="POST"
+              className="flex flex-col gap-5"
+            >
+                <input type="hidden" name="_subject" value="New Website Contact Message - SLN Transportation" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <label className="block">
                     <span className="block text-sm font-semibold text-[#160202] mb-2">
@@ -195,6 +184,7 @@ export default function Contact() {
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#160202]/35" />
                       <input
                         required
+                        name="name"
                         type="text"
                         placeholder="e.g. Sarah Johnson"
                         value={form.name}
@@ -212,6 +202,7 @@ export default function Contact() {
                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#160202]/35" />
                       <input
                         required
+                        name="phone"
                         type="tel"
                         placeholder="(773) 000-0000"
                         value={form.phone}
@@ -230,6 +221,7 @@ export default function Contact() {
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#160202]/35" />
                     <input
                       required
+                      name="email"
                       type="email"
                       placeholder="sarah@example.com"
                       value={form.email}
@@ -246,6 +238,7 @@ export default function Contact() {
                   <div className="relative">
                     <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#160202]/35 pointer-events-none" />
                     <select
+                      name="subject"
                       value={form.subject}
                       onChange={(e) => update("subject", e.target.value)}
                       className="w-full pl-11 pr-10 py-3 rounded-xl bg-[#f6f5f4] border border-slate-200/80 text-sm text-[#160202] outline-none transition-all duration-200 focus:border-[#f97316] focus:bg-white appearance-none cursor-pointer"
@@ -268,6 +261,7 @@ export default function Contact() {
                     <MessageSquareMore className="absolute left-4 top-4 w-4 h-4 text-[#160202]/35" />
                     <textarea
                       required
+                      name="message"
                       rows={3}
                       placeholder="How can SLN Transportation assist you today?"
                       value={form.message}
@@ -285,8 +279,7 @@ export default function Contact() {
                   <span>Send Message</span>
                   <ArrowRight className="w-4 h-4 transition-transform duration-200 ease-out group-hover:translate-x-1" />
                 </button>
-              </form>
-            )}
+            </form>
           </div>
         </div>
       </div>

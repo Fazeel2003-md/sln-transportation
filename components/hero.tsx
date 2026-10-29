@@ -66,6 +66,9 @@ const columnTwo: HeroImage[] = [
   },
 ];
 
+const mobileRowOne = columnOne.slice(0, 4);
+const mobileRowTwo = [...columnTwo, columnOne[3]];
+
 /* One infinitely scrolling vertical marquee of photos */
 function MarqueeColumn({
   images,
@@ -95,6 +98,41 @@ function MarqueeColumn({
               sizes="(min-width: 1024px) 26vw, 100vw"
               className="object-cover object-center"
             />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileMarqueeRow({
+  images,
+  direction,
+  running,
+}: {
+  images: HeroImage[];
+  direction: "to-right" | "to-left";
+  running: boolean;
+}) {
+  return (
+    <div className="hero-mobile-marquee-window w-full overflow-hidden">
+      <div
+        className={`hero-mobile-marquee-track ${direction} ${running ? "is-running" : ""}`}
+        aria-hidden="true"
+      >
+        {[0, 1].map((set) => (
+          <div className="hero-mobile-marquee-set" key={set}>
+            {images.map((image, index) => (
+              <div className="hero-mobile-marquee-card" key={`${image.src}-${index}`}>
+                <Image
+                  src={image.src}
+                  alt=""
+                  fill
+                  sizes="(max-width: 420px) 42vw, 208px"
+                  className="object-cover object-center"
+                />
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -158,8 +196,8 @@ export default function Hero() {
           <h1
             className={`text-4xl sm:text-5xl lg:text-[52px] font-[family-name:var(--font-serif-head)] font-semibold tracking-tight text-[#160202] leading-[1.16] mb-5 transition-all duration-800 ease-out ${
               inView
-                ? "opacity-100 translate-y-0 blur-0"
-                : "opacity-0 translate-y-6 blur-sm"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-6"
             }`}
             style={{ transitionDelay: "300ms" }}
           >
@@ -170,8 +208,8 @@ export default function Hero() {
           <p
             className={`text-[15px] sm:text-base text-[#5f5252] max-w-lg font-normal leading-relaxed mb-8 transition-all duration-800 ease-out ${
               inView
-                ? "opacity-100 translate-y-0 blur-0"
-                : "opacity-0 translate-y-5 blur-xs"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-5"
             }`}
             style={{ transitionDelay: "500ms" }}
           >
@@ -190,7 +228,7 @@ export default function Hero() {
             style={{ transitionDelay: "700ms" }}
           >
             <Link
-              href="#apply"
+              href="#careers"
               className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#f97316] hover:bg-[#ea6a0c] text-white font-bold text-[14px] shadow-[0_8px_20px_rgba(249,115,22,0.3)] active:translate-y-0 transition-all duration-200 hover:scale-[1.02]"
             >
               <span>Apply Now</span>
@@ -276,20 +314,16 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Mobile fallback: single hero image */}
+        {/* Mobile image marquee: two seamless rows moving in opposite directions */}
         <div
-          className={`lg:hidden relative h-72 rounded-3xl overflow-hidden transition-all duration-1000 ease-out ${
+          className={`hero-mobile-marquee lg:hidden relative w-full overflow-hidden rounded-3xl transition-all duration-1000 ease-out ${
             inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <Image
-            src="/images/hero-sienna-dropoff.png"
-            alt="SLN driver helping a student at school"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
+          <div className="flex flex-col gap-3 py-3">
+            <MobileMarqueeRow images={mobileRowOne} direction="to-right" running={inView} />
+            <MobileMarqueeRow images={mobileRowTwo} direction="to-left" running={inView} />
+          </div>
         </div>
       </div>
     </section>

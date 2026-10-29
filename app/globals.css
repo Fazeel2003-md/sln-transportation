@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  overflow-x: clip;
+}
+
 body:has(.driver-application-page) {
   background-color: #f4f7fb;
 }
@@ -53,6 +62,56 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: translateY(0); }
 }
 
+@keyframes hero-mobile-marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes hero-mobile-marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.hero-mobile-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+.hero-mobile-marquee-track.is-running.to-right {
+  animation-name: hero-mobile-marquee-right;
+  animation-duration: 30s;
+  animation-play-state: running;
+}
+
+.hero-mobile-marquee-track.is-running.to-left {
+  animation-name: hero-mobile-marquee-left;
+  animation-duration: 36s;
+  animation-play-state: running;
+}
+
+.hero-mobile-marquee-set {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.hero-mobile-marquee-card {
+  position: relative;
+  flex: 0 0 clamp(132px, 42vw, 208px);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.hero-mobile-marquee-track.to-left {
+  animation-delay: -4s;
+}
+
 .marquee-track {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -74,8 +133,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .marquee-track,
+  .hero-mobile-marquee-track {
     animation: none !important;
+    transform: none !important;
   }
 }
 
@@ -117,10 +178,11 @@ h1, h2, h3, h4, h5, h6 {
   flex-grow: 2.6;
 }
 
-@media (max-width: 767px) {
-  /* Mobile: active card expanded, inactive cards compact rows */
+@media (max-width: 1023px) {
+  /* Compact interactive cards on narrow screens; expand on wide layouts. */
   .wc-card {
     height: 4.5rem;
+    flex: none;
     justify-content: center;
   }
 
@@ -131,6 +193,7 @@ h1, h2, h3, h4, h5, h6 {
 
   .wc-card.is-active {
     height: 21rem;
+    flex: none;
     justify-content: flex-end;
   }
 
@@ -148,7 +211,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .wc-row {
     height: 27rem;
   }
@@ -163,6 +226,9 @@ h1, h2, h3, h4, h5, h6 {
 .careers-row .career-card-left,
 .careers-row .career-card-right {
   opacity: 0;
+  transition:
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .careers-row .career-card-left {
@@ -181,13 +247,6 @@ h1, h2, h3, h4, h5, h6 {
 .careers-row.is-in .career-card-right {
   opacity: 1;
   transform: translateX(0);
-}
-
-.careers-row.is-in .career-card-left,
-.careers-row.is-in .career-card-right {
-  transition:
-    transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Contact section entrance + micro-interactions */
@@ -304,7 +363,6 @@ h1, h2, h3, h4, h5, h6 {
   border: 1.5px solid #f97316;
   box-shadow: 0 5px 18px rgba(249, 115, 22, 0.16);
   transition: box-shadow 250ms ease, transform 250ms ease, border-color 250ms ease;
-  animation: hero-badge-glow 2.2s ease-in-out 0.4s infinite;
 }
 
 .hero-trust-card {
@@ -395,9 +453,9 @@ h1, h2, h3, h4, h5, h6 {
   content: "";
   position: absolute;
   z-index: 0;
-  inset: -20% auto -20% -45%;
+  inset: -20% auto -20% 0;
   width: 34%;
-  transform: skewX(-20deg);
+  transform: translateX(-180%) skewX(-20deg);
   background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.14), transparent);
   animation: hero-badge-sheen 2.8s ease-in-out 0.5s infinite;
   pointer-events: none;
@@ -411,23 +469,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-location-pin {
   transform-origin: center bottom;
-  animation: hero-pin-settle 1.8s ease-in-out 0.3s infinite;
+  animation: hero-pin-settle 2.8s ease-in-out 0.3s infinite;
 }
 
 @keyframes hero-pin-settle {
-  0%, 70%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 transparent); }
-  78% { transform: translateY(-4px) scale(1.18); filter: drop-shadow(0 3px 4px rgba(249, 115, 22, 0.35)); }
-  86% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 transparent); }
+  0%, 72%, 100% { transform: translateY(0) scale(1); }
+  80% { transform: translateY(-3px) scale(1.12); }
+  88% { transform: translateY(0) scale(1); }
 }
 
 @keyframes hero-badge-sheen {
-  0%, 45% { left: -45%; }
-  72%, 100% { left: 125%; }
-}
-
-@keyframes hero-badge-glow {
-  0%, 100% { box-shadow: 0 5px 18px rgba(22, 2, 2, 0.07); }
-  50% { box-shadow: 0 8px 24px rgba(249, 115, 22, 0.18), 0 0 0 4px rgba(249, 115, 22, 0.045); }
+  0%, 45% { transform: translateX(-180%) skewX(-20deg); }
+  72%, 100% { transform: translateX(480%) skewX(-20deg); }
 }
 
 .ct-reveal > * {
@@ -496,30 +549,10 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* About feature icons: distinct, polished idle motion and crisp hover response */
-@keyframes about-panel-color-flow {
-  0% { background-position: 0% 50%; box-shadow: 0 16px 40px rgba(0,0,0,.16), 0 0 18px rgba(249,115,22,.2); }
-  50% { background-position: 100% 50%; box-shadow: 0 20px 46px rgba(0,0,0,.2), 0 0 36px rgba(16,185,129,.34); }
-  100% { background-position: 0% 50%; box-shadow: 0 16px 40px rgba(0,0,0,.16), 0 0 18px rgba(249,115,22,.2); }
-}
-
-@keyframes about-icon-color-cycle {
-  0%, 100% { background-color: #f97316; box-shadow: 0 0 0 5px rgba(249,115,22,.14), 0 8px 24px rgba(249,115,22,.36); }
-  50% { background-color: #0f9f76; box-shadow: 0 0 0 7px rgba(16,185,129,.16), 0 8px 28px rgba(16,185,129,.4); }
-}
-
-@keyframes about-icon-spark {
-  0%, 100% { transform: scale(1) rotate(0); }
-  35% { transform: scale(1.22) rotate(-9deg); }
-  65% { transform: scale(1.08) rotate(6deg); }
-}
-
-/* Keep this effect unmistakable even over the moving About background video. */
+/* Keep the feature panel polished without continuous paint-heavy effects. */
 .about-panel {
   border-color: rgba(255,255,255,.42) !important;
   background: linear-gradient(115deg, rgba(249,115,22,.38), rgba(255,255,255,.17), rgba(16,185,129,.3), rgba(255,255,255,.15)) !important;
-  background-size: 300% 300% !important;
-  animation: about-panel-color-flow 5s ease-in-out infinite;
 }
 
 .about-panel > .group {
@@ -531,125 +564,63 @@ h1, h2, h3, h4, h5, h6 {
 .about-panel .about-users,
 .about-panel .about-pin,
 .about-panel .about-heart {
-  animation: about-icon-color-cycle 3.2s ease-in-out infinite, about-icon-orbit 2.4s ease-in-out infinite;
+  transition: none;
 }
 
-.about-panel .about-users { animation-delay: .15s, .15s; }
-.about-panel .about-pin { animation-delay: .3s, .3s; }
-.about-panel .about-heart { animation-delay: .45s, .45s; }
+@keyframes about-icon-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.08); }
+}
 
 .about-panel .about-shield svg,
 .about-panel .about-users svg,
 .about-panel .about-pin svg,
 .about-panel .about-heart svg {
-  color: #fff !important;
-  animation: about-icon-spark 2.4s ease-in-out infinite;
+  transform-origin: center;
+  animation: about-icon-float 2.2s ease-in-out infinite;
+  transition: transform .25s ease;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .about-panel { animation: none !important; }
-  .about-panel .about-shield,
-  .about-panel .about-users,
-  .about-panel .about-pin,
-  .about-panel .about-heart,
-  .about-panel .about-shield svg,
-  .about-panel .about-users svg,
-  .about-panel .about-pin svg,
-  .about-panel .about-heart svg {
-    animation: none !important;
-  }
-}
-
-@keyframes about-icon-orbit {
-  0%, 100% { transform: translateY(0) rotate(0) scale(1); }
-  45% { transform: translateY(-4px) rotate(-4deg) scale(1.04); }
-  70% { transform: translateY(0) rotate(2deg) scale(1); }
-}
-
-@keyframes about-icon-pop {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-}
-
-@keyframes about-ring-pulse {
-  0% { transform: scale(.82); opacity: .65; }
-  75%, 100% { transform: scale(1.42); opacity: 0; }
-}
-
-.about-panel .about-shield,
-.about-panel .about-users,
-.about-panel .about-pin,
-.about-panel .about-heart {
-  position: relative;
-  transition: background-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
-  animation: about-icon-color-cycle 3.2s ease-in-out infinite, about-icon-orbit 2.4s ease-in-out infinite;
-}
-
-.about-panel .about-users { animation-delay: .25s; }
-.about-panel .about-pin { animation-delay: .5s; }
-.about-panel .about-heart { animation-delay: .75s; }
-
-.about-panel .about-shield::after,
-.about-panel .about-users::after,
-.about-panel .about-pin::after,
-.about-panel .about-heart::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border: 1px solid rgba(249, 115, 22, .65);
-  border-radius: inherit;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.about-panel .about-shield::after { animation: about-ring-pulse 2.8s ease-out 1.1s infinite; }
-.about-panel .about-users::after { animation: about-ring-pulse 2.8s ease-out 1.35s infinite; }
-.about-panel .about-pin::after { animation: about-ring-pulse 2.8s ease-out 1.6s infinite; }
-.about-panel .about-heart::after { animation: about-ring-pulse 2.8s ease-out 1.85s infinite; }
-
-.about-panel .about-users svg,
-.about-panel .about-pin svg,
-.about-panel .about-heart svg {
-  transition: color .3s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
-}
-
-.about-panel .group:hover .about-shield,
-.about-panel .group:hover .about-users,
-.about-panel .group:hover .about-pin,
-.about-panel .group:hover .about-heart {
-  animation: none;
-  transform: translateY(-5px) scale(1.12);
-  background-color: #f97316;
-  box-shadow: 0 0 0 6px rgba(249, 115, 22, .16), 0 10px 28px rgba(249, 115, 22, .45);
-}
+.about-panel .about-shield svg { color: #22c55e !important; }
+.about-panel .about-users svg { color: #f97316 !important; animation-delay: .4s; }
+.about-panel .about-pin svg { color: #3b82f6 !important; animation-delay: .8s; }
+.about-panel .about-heart svg { color: #ef4444 !important; animation-delay: 1.2s; }
 
 .about-panel .group:hover .about-shield svg,
 .about-panel .group:hover .about-users svg,
 .about-panel .group:hover .about-pin svg,
 .about-panel .group:hover .about-heart svg {
-  color: #fff;
-  transform: scale(1.12) rotate(-5deg);
+  animation-play-state: paused;
+  transform: translateY(-3px) scale(1.16) rotate(-5deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-panel .about-shield,
-  .about-panel .about-users,
-  .about-panel .about-pin,
-  .about-panel .about-heart {
+  .about-panel .about-shield svg,
+  .about-panel .about-users svg,
+  .about-panel .about-pin svg,
+  .about-panel .about-heart svg {
+    animation: none !important;
     transition: none !important;
-    animation: none !important;
-  }
-
-  .about-panel .about-shield::after,
-  .about-panel .about-users::after,
-  .about-panel .about-pin::after,
-  .about-panel .about-heart::after {
-    animation: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .wc-card {
     transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

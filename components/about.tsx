@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -10,21 +10,54 @@ import {
   Heart,
 } from "lucide-react";
 
-const VIDEO_SRC = "/videos/about-us-background.mp4";
+const VIDEO_SRC = "/videos/about-us-background-optimized.mp4";
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [playBackgroundVideo, setPlayBackgroundVideo] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const media = window.matchMedia("(prefers-reduced-motion: no-preference)");
+    const observer = new IntersectionObserver(
+      ([entry]) => setPlayBackgroundVideo(media.matches && entry.isIntersecting),
+      { rootMargin: "250px 0px" }
+    );
+    const updateMotionPreference = () => {
+      if (!media.matches) setPlayBackgroundVideo(false);
+      else {
+        const bounds = section.getBoundingClientRect();
+        setPlayBackgroundVideo(
+          bounds.top < window.innerHeight + 250 && bounds.bottom > -250
+        );
+      }
+    };
+
+    observer.observe(section);
+    media.addEventListener("change", updateMotionPreference);
+    return () => {
+      observer.disconnect();
+      media.removeEventListener("change", updateMotionPreference);
+    };
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="about"
       className="relative w-full overflow-hidden bg-[#160202] py-24 sm:py-28 px-4 sm:px-6 lg:px-8"
     >
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src={VIDEO_SRC}
-        autoPlay
+        src={playBackgroundVideo ? VIDEO_SRC : undefined}
+        poster="/images/about-fleet.webp"
+        preload="none"
+        autoPlay={playBackgroundVideo}
         muted
-        loop
+        loop={playBackgroundVideo}
         playsInline
         aria-hidden
       />
@@ -70,7 +103,7 @@ export default function About() {
         <div className="about-panel mt-32 sm:mt-36 p-6 sm:p-8 rounded-3xl bg-white/15 backdrop-blur-[14px] border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.14)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-0">
           {/* Safety First */}
           <div className="group flex items-start gap-4 lg:pr-6 lg:border-r border-white/15">
-            <div className="about-shield w-14 h-14 rounded-full bg-[#f97316] flex items-center justify-center shrink-0">
+            <div className="about-shield w-14 h-14 rounded-full bg-white flex items-center justify-center shrink-0">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>

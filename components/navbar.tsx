@@ -11,12 +11,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Why Choose Us", href: "#why-us" },
-  { label: "Careers", href: "#careers" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About Us", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Why Choose Us", href: "/#why-us" },
+  { label: "Careers", href: "/#careers" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
@@ -27,60 +27,34 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
+    let frame = 0;
     const handleScroll = () => {
-      // Trigger detachment when scrolled past 30px
-      setScrolled(window.scrollY > 30);
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const nextScrolled = window.scrollY > 30;
+        setScrolled((current) => current === nextScrolled ? current : nextScrolled);
 
-      // Scroll-spy: highlight the nav item of the current section
-      const sectionIds = navItems
-        .map((item) => item.href.replace("#", ""))
-        .filter(Boolean);
-      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
-
-      for (const sectionId of sectionIds) {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            const matched = navItems.find(
-              (item) => item.href === `#${sectionId}`
-            );
-            if (matched) setActiveItem(matched.label);
+        const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+        for (const item of navItems) {
+          const sectionId = item.href.split("#")[1];
+          const el = sectionId ? document.getElementById(sectionId) : null;
+          if (el && scrollPosition >= el.offsetTop && scrollPosition < el.offsetTop + el.offsetHeight) {
+            setActiveItem((current) => current === item.label ? current : item.label);
+            break;
           }
         }
-      }
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Fallback spy: re-checks the active section periodically, guaranteeing the
-  // highlight stays correct even if scroll events are ever missed
-  useEffect(() => {
-    const id = setInterval(() => {
-      const sectionIds = navItems
-        .map((item) => item.href.replace("#", ""))
-        .filter(Boolean);
-      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
-
-      for (const sectionId of sectionIds) {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            const matched = navItems.find(
-              (item) => item.href === `#${sectionId}`
-            );
-            if (matched) setActiveItem(matched.label);
-          }
-        }
-      }
-    }, 350);
-    return () => clearInterval(id);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
@@ -154,7 +128,7 @@ export default function Navbar() {
 
         {/* Right Side: Desktop Nav Buttons (Detaches to Right Pill on Scroll) */}
         <div
-          className={`hidden md:flex items-center space-x-1 lg:space-x-1.5 transition-all duration-500 ease-out rounded-full ${
+          className={`hidden lg:flex items-center space-x-1 lg:space-x-1.5 transition-all duration-500 ease-out rounded-full ${
             scrolled
               ? "py-1 sm:py-1.5 px-2 sm:px-2.5"
               : "p-0"
@@ -203,11 +177,11 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle Button */}
-        <div className="flex md:hidden items-center">
+        <div className="flex lg:hidden items-center">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-full text-[#160202] transition-all outline-none focus:outline-none focus:ring-0 select-none hover:bg-white/40"
+            className="p-2 rounded-full text-[#160202] transition-all outline-none focus-visible:ring-2 focus-visible:ring-[#f97316] focus-visible:ring-offset-2 select-none hover:bg-white/40"
             style={{
               background: scrolled
                 ? "rgba(241, 245, 249, 0.88)"
@@ -233,7 +207,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-2.5 max-w-sm ml-auto pointer-events-auto animate-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden mt-2.5 max-w-sm ml-auto pointer-events-auto animate-in slide-in-from-top-2 duration-200">
           <div
             className="p-2 rounded-2xl space-y-1"
             style={{

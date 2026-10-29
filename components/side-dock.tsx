@@ -11,12 +11,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "#home", icon: <Home className="w-4 h-4" /> },
-  { label: "About Us", href: "#about", icon: <Users className="w-4 h-4" /> },
-  { label: "Services", href: "#services", icon: <Bus className="w-4 h-4" /> },
-  { label: "Why Choose Us", href: "#why-us", icon: <Award className="w-4 h-4" /> },
-  { label: "Careers", href: "#careers", icon: <Briefcase className="w-4 h-4" /> },
-  { label: "Contact", href: "#contact", icon: <Phone className="w-4 h-4" /> },
+  { label: "Home", href: "/#home", icon: <Home className="w-4 h-4" /> },
+  { label: "About Us", href: "/#about", icon: <Users className="w-4 h-4" /> },
+  { label: "Services", href: "/#services", icon: <Bus className="w-4 h-4" /> },
+  { label: "Why Choose Us", href: "/#why-us", icon: <Award className="w-4 h-4" /> },
+  { label: "Careers", href: "/#careers", icon: <Briefcase className="w-4 h-4" /> },
+  { label: "Contact", href: "/#contact", icon: <Phone className="w-4 h-4" /> },
 ];
 
 export default function SideDock() {
@@ -24,45 +24,76 @@ export default function SideDock() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    let frame = 0;
+    let listening = false;
+
     const handleScroll = () => {
-      // Becomes visible from Section 2 onwards (scrolled past ~60% of viewport)
-      const heroThreshold = window.innerHeight * 0.55;
-      setIsVisible(window.scrollY > heroThreshold);
+      if (frame || !desktop.matches) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const nextVisible = window.scrollY > window.innerHeight * 0.55;
+        setIsVisible((current) => current === nextVisible ? current : nextVisible);
 
-      // Simple Scroll-Spy detection for sections
-      const sections = ["home", "about", "services", "why-us", "careers", "contact"];
-      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
-
-      for (const sectionId of sections) {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            const matched = navItems.find((item) => item.href === `#${sectionId}`);
-            if (matched) setActiveSection(matched.label);
+        const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+        for (const item of navItems) {
+          const sectionId = item.href.split("#")[1];
+          const section = sectionId ? document.getElementById(sectionId) : null;
+          if (!section) continue;
+          const top = section.offsetTop;
+          if (scrollPosition >= top && scrollPosition < top + section.offsetHeight) {
+            setActiveSection((current) => current === item.label ? current : item.label);
+            break;
           }
         }
+      });
+    };
+
+    const start = () => {
+      if (listening || !desktop.matches) return;
+      listening = true;
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll, { passive: true });
+      handleScroll();
+    };
+    const updateBreakpoint = () => {
+      if (desktop.matches) start();
+      else {
+        listening = false;
+        window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleScroll);
+        if (frame) window.cancelAnimationFrame(frame);
+        frame = 0;
+        setIsVisible(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateBreakpoint();
+    desktop.addEventListener("change", updateBreakpoint);
+    return () => {
+      desktop.removeEventListener("change", updateBreakpoint);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (window.location.pathname !== "/") return;
+    const sectionId = href.split("#")[1];
+    if (!sectionId) return;
     e.preventDefault();
-    const target = document.querySelector(href);
+    const target = document.getElementById(sectionId);
     if (target) {
       target.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", `/#${sectionId}`);
     }
   };
 
   return (
     <aside
       aria-label="Quick Section Navigation"
-      className={`fixed right-3 sm:right-5 top-1/2 -translate-y-1/2 z-40 transition-all duration-400 ease-out ${
+      className={`hidden lg:block fixed right-3 xl:right-5 top-1/2 -translate-y-1/2 z-40 transition-all duration-400 ease-out ${
         isVisible
           ? "opacity-100 translate-x-0 pointer-events-auto scale-100"
           : "opacity-0 translate-x-6 pointer-events-none scale-95"

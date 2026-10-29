@@ -68,6 +68,7 @@ export default function WhyUs() {
   const [paused, setPaused] = useState(false); // after manual selection
   const [hoverPaused, setHoverPaused] = useState(false); // while hovering the row
   const [reduced, setReduced] = useState(false);
+  const [canAutoPlay, setCanAutoPlay] = useState(false);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -82,22 +83,30 @@ export default function WhyUs() {
   }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopPointer = window.matchMedia("(min-width: 1024px) and (hover: hover)");
+    const update = () => {
+      setReduced(reducedMotion.matches);
+      setCanAutoPlay(desktopPointer.matches && !reducedMotion.matches);
+    };
     update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    reducedMotion.addEventListener("change", update);
+    desktopPointer.addEventListener("change", update);
+    return () => {
+      reducedMotion.removeEventListener("change", update);
+      desktopPointer.removeEventListener("change", update);
+    };
   }, []);
 
   useEffect(() => {
-    // Seamless automatic rotation (~3.6s), paused on hover/interaction
-    if (paused || hoverPaused || reduced || !inView) return;
+    // Keep the image carousel slow and limited to visible desktop layouts.
+    if (paused || hoverPaused || reduced || !canAutoPlay || !inView) return;
     const id = setInterval(
       () => setActive((a) => (a + 1) % features.length),
-      3600
+      6500
     );
     return () => clearInterval(id);
-  }, [paused, hoverPaused, reduced, inView]);
+  }, [paused, hoverPaused, reduced, canAutoPlay, inView]);
 
   const select = (i: number) => {
     setActive(i);
@@ -110,7 +119,7 @@ export default function WhyUs() {
     <section
       ref={sectionRef}
       id="why-us"
-      className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
+      className="relative w-full py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
@@ -133,9 +142,13 @@ export default function WhyUs() {
         {/* Interactive animated feature-card row */}
         <div
           ref={rowRef}
-          onMouseEnter={() => setHoverPaused(true)}
-          onMouseLeave={() => setHoverPaused(false)}
-          className="wc-row flex flex-col md:flex-row gap-3 md:gap-4"
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") setHoverPaused(true);
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType === "mouse") setHoverPaused(false);
+          }}
+          className="wc-row flex flex-col lg:flex-row gap-3 lg:gap-4"
         >
           {features.map((feature, i) => {
             const isActive = i === active;
@@ -146,7 +159,9 @@ export default function WhyUs() {
                 tabIndex={0}
                 aria-current={isActive ? "true" : undefined}
                 aria-label={`Show feature: ${feature.title}`}
-                onMouseEnter={() => select(i)}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") select(i);
+                }}
                 onClick={() => select(i)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -154,7 +169,7 @@ export default function WhyUs() {
                     select(i);
                   }
                 }}
-                className={`wc-card group relative flex flex-col justify-end p-5 sm:p-6 rounded-3xl overflow-hidden cursor-pointer select-none outline-none transition-[box-shadow,border-color] duration-300 ${
+                className={`wc-card group relative flex flex-col justify-end p-5 sm:p-6 rounded-3xl overflow-hidden cursor-pointer touch-manipulation select-none outline-none focus-visible:ring-2 focus-visible:ring-[#f97316] focus-visible:ring-offset-2 transition-[box-shadow,border-color] duration-300 ${
                   isActive
                     ? "is-active border-transparent shadow-[0_22px_48px_rgba(22,2,2,0.16)]"
                     : "border border-slate-200/90 bg-[#f6f5f4] shadow-xs hover:bg-[#f1efee] hover:shadow-sm"
@@ -224,12 +239,12 @@ export default function WhyUs() {
                   <p
                     className={`text-[13px] leading-relaxed mt-1.5 transition-colors duration-500 max-w-lg ${
                       isActive ? "text-white/90" : "text-[#160202]/50"
-                    } hidden md:block`}
+                    } hidden lg:block`}
                   >
                     {feature.description}
                   </p>
                   <p
-                    className={`text-[13px] leading-relaxed mt-1.5 max-w-lg md:hidden ${
+                    className={`text-[13px] leading-relaxed mt-1.5 max-w-lg lg:hidden ${
                       isActive ? "text-white/90" : "hidden"
                     }`}
                   >

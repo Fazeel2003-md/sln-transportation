@@ -46,6 +46,7 @@ export default function Services() {
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [canAutoPlay, setCanAutoPlay] = useState(false);
 
   const current = servicesList[Math.min(active, servicesList.length - 1)];
 
@@ -62,29 +63,36 @@ export default function Services() {
   }, []);
 
   useEffect(() => {
-    // Respect reduced-motion preference
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopPointer = window.matchMedia("(min-width: 1024px) and (hover: hover)");
+    const update = () => {
+      setReduced(reducedMotion.matches);
+      setCanAutoPlay(desktopPointer.matches && !reducedMotion.matches);
+    };
     update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    reducedMotion.addEventListener("change", update);
+    desktopPointer.addEventListener("change", update);
+    return () => {
+      reducedMotion.removeEventListener("change", update);
+      desktopPointer.removeEventListener("change", update);
+    };
   }, []);
 
   useEffect(() => {
-    // Automatic seamless rotation (~3.6s), paused on hover/interaction
-    if (paused || reduced || !inView) return;
+    // Rotate slowly on desktop only; touch users select services directly.
+    if (paused || reduced || !canAutoPlay || !inView) return;
     const id = setInterval(
       () => setActive((a) => (a + 1) % servicesList.length),
-      3600
+      6000
     );
     return () => clearInterval(id);
-  }, [paused, reduced, inView]);
+  }, [paused, reduced, canAutoPlay, inView]);
 
   return (
     <section
       ref={sectionRef}
       id="services"
-      className="relative w-full py-24 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
+      className="relative w-full py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#faf3ec] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
@@ -115,25 +123,31 @@ export default function Services() {
                   tabIndex={0}
                   aria-current={isActive ? "true" : undefined}
                   aria-label={`Show ${service.title}`}
-                  onMouseEnter={() => {
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== "mouse") return;
                     setActive(i);
                     setPaused(true);
                   }}
-                  onMouseLeave={() => setPaused(false)}
+                  onPointerLeave={(event) => {
+                    if (event.pointerType === "mouse") setPaused(false);
+                  }}
                   onFocus={() => {
                     setActive(i);
                     setPaused(true);
                   }}
                   onBlur={() => setPaused(false)}
                   onClick={() => setActive(i)}
-                  onTouchStart={() => setActive(i)}
+                  onTouchStart={() => {
+                    setActive(i);
+                    setPaused(true);
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       setActive(i);
                     }
                   }}
-                  className={`group flex items-baseline gap-4 sm:gap-5 py-3 sm:py-3.5 cursor-pointer transition-all duration-500 ease-out outline-none ${
+                  className={`group flex items-baseline gap-4 sm:gap-5 py-3 sm:py-3.5 cursor-pointer touch-manipulation transition-all duration-500 ease-out outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-[#f97316] focus-visible:ring-offset-4 ${
                     isActive
                       ? "translate-x-2"
                       : "translate-x-0 hover:translate-x-1"
